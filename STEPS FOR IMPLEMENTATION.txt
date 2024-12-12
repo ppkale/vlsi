@@ -1,0 +1,37 @@
+STEPS FOR IMPLEMENTATION:
+1. Open ISE Design Suite 14.4 and ISE Project Navigator window would come up.
+2. Create a new Project, provide project name and select location for saving the project.
+3. In New Project Wizard Window, provide the following details:
+• Family- Spartan 6
+• Device - XC6SLX45
+• Package - CSG324
+• Speed - -3
+• Synthesis Tool - XST (VHDL/Verilog)
+• Simulator- ISim (VHDL/Verilog)
+• Preferred Language - VHDL
+Click Finish
+4. Right Click on Project Name and select new source as VHDL module and write the VHDL 
+code for the intended design.
+5. Perform Check syntax operation under Synthesize process to verify that the code is 
+syntactically correct.
+6. View RTL schematic and observe the Block diagram and its detailed connection.
+7. For performing simulation, write click on VHDL file and select new source. Now select 
+VHDL Test Bench option, and in this window, write VHDL code for test bench. 
+8. Select Simulation Radio button at left hand top corner of Navigator window.
+9. In ISim simulator process, perform Behavioral Check Syntax followed by Simulate 
+Behavioral Model. Run the simulation and observe the output in ISim window.
+10. Now for implementation, select Implementation Radio button at left hand top corner of 
+Navigator window.11. Right click on VHDL file, go to New Source and select Implementation constraint file .
+12. In UCF file, assign pin numbers for inputs and outputs looking at the switches and LEDs on 
+Digilent ATLYS board. The template for the same is as under:
+Net "<Port Name>" LOC= "Switch/LED number"
+13. Click on Implement design which includes Translate, Map, Place and Route
+14. Now select Generate Programming File process to create the bit file.
+15. Next in Configure target device option, double click on Mange Configuration Project 
+(iMPACT)
+16. In ISE iMPACT window, double click on Boundary Scan. Right Click on window and select 
+Add Xilinx Device
+17. Now select the appropriate bit file from Assign New Configuration File window
+18. Right click on Xilinx Icon and select Program Option.
+19. Apply the input through onboard switches or interfaced Add-on Module and observe the 
+output on the intended output device which may be on board LED/LCD/SSD/Add-on Module
