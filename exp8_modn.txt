@@ -1,0 +1,185 @@
+-- VHDL Code for MOD N Counter
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+
+entity modN_counter is
+
+generic(n: integer := 128);
+
+port(
+clk : in STD_LOGIC;
+reset : in STD_LOGIC;
+dout : out STD_LOGIC_VECTOR(6 downto 0)
+         );
+end modN_counter;
+
+
+architecture A_modN of modN_counter is
+
+begin
+
+counter : process (clk,reset) is
+
+	 variable m : integer range 0 to (n-1) := 0;
+    begin
+        if (reset='1') then
+m := 0;
+        --elsif (rising_edge (clk)) then
+		elsif(clk'event and clk='1') then
+m := m + 1;
+        end if;
+        if (m=(n)) then
+m := 0;
+        end if;
+dout<= conv_std_logic_vector (m,7);
+    end process counter;
+
+end A_modN;
+
+
+
+--------------------------------------------------------------
+-- Test Bench
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+ 
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--USE ieee.numeric_std.ALL;
+ 
+ENTITY MOD_TB IS
+END MOD_TB;
+ 
+ARCHITECTURE behavior OF MOD_TB IS 
+ 
+    -- Component Declaration for the Unit Under Test (UUT)
+ 
+    COMPONENT modN_counter
+    PORT(
+         clk : I
+N  std_logic;
+         reset : IN  std_logic;
+         dout : OUT  std_logic_vector(6 downto 0)
+        );
+    END COMPONENT;    
+
+   --Inputs
+   signal clk : std_logic := '0';
+   signal reset : std_logic := '0';
+
+ 	--Outputs
+   signal dout : std_logic_vector(6 downto 0);
+
+   -- Clock period definitions
+   constant clk_period : time := 10 ns;
+ 
+BEGIN
+ 
+	-- Instantiate the Unit Under Test (UUT)
+   uut: modN_counter PORT MAP (
+          clk => clk,
+          reset => reset,
+          dout => dout
+        );
+
+   -- Clock process definitions
+   clk_process :process
+   begin
+		clk <= '0';
+		wait for clk_period/2;
+		clk <= '1';
+		wait for clk_period/2;
+   end process;
+ 
+
+   -- Stimulus process
+   stim_proc: process
+   begin		
+      -- hold reset state for 100 ns.
+      --wait for 100 ns;	
+     reset<='1';
+	  wait for 10 ns;	
+	  reset<='0';
+     
+      -- insert stimulus here 
+
+      wait;
+   end process;
+
+END;
+
+
+
+------------------------------------------------------
+-- Changes Implementation on Spartan 6 MOD 128 
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+
+entity modN_counter is
+
+generic(n: integer := 128);
+
+port(
+clk : in STD_LOGIC;
+reset : in STD_LOGIC;
+dout : out STD_LOGIC_VECTOR(6 downto 0)
+         );
+end modN_counter;
+
+
+architecture A_modN of modN_counter is
+signal temp:std_logic_vector(22 downto 0);  
+signal sclk:std_logic;
+
+begin
+
+p11: process(clk,reset)
+	begin
+	if(reset='1')then temp<=(others=>'0');
+		elsif(clk'event and clk='1') then
+		temp<= temp + 1;
+		end if;
+	end process;
+	sclk<=temp(22);
+
+
+counter : process (sclk,reset) is
+
+	 variable m : integer range 0 to (n-1) := 0;
+    begin
+        if (reset='1') then
+m := 0;
+        --elsif (rising_edge (clk)) then
+		elsif(sclk'event and sclk='1') then
+m := m + 1;
+        end if;
+        if (m=(n)) then
+m := 0;
+        end if;
+dout<= conv_std_logic_vector (m,7);
+    end process counter;
+
+end A_modN;
+
+
+
+----------------------------------------------------------------------------------
+--Implementation Constraint File
+NET "reset" LOC = "E4"; 
+NET "CLK" LOC ="L15";  
+NET "dout<0>" LOC = "U18"; # Bank = 1, Pin name = IO_L52N_M1DQ15,  Sch name = LD0
+NET "dout<1>" LOC = "M14"; # Bank = 1, Pin name = IO_L53P,  Sch name = LD1
+NET "dout<2>" LOC = "N14"; # Bank = 1, Pin name = IO_L53N_VREF,  Sch name = LD2
+NET "dout<3>" LOC = "L14"; # Bank = 1, Pin name = IO_L61P,  Sch name = LD3
+NET "dout<4>" LOC = "M13"; # Bank = 1, Pin name = IO_L61N,  Sch name = LD4
+NET "dout<5>" LOC = "D4"; # Bank = 1, Pin name = IO_L61P,  Sch name = LD3
+NET "dout<6>" LOC = "P16"; # Bank = 1, Pin name = IO_L61P,  Sch name = LD3
+#NET "dout<7>" LOC = "N12";
+
